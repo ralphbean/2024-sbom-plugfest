@@ -11,3 +11,16 @@ harmonization plugfest](https://resources.sei.cmu.edu/news-events/events/sbom/).
 The focus is on accuracy. The builds are performed with network disabled so
 that we can be sure that no components get pulled in that aren't explicitly
 declared and handled by cachi2's pre-fetch.
+
+# Output
+
+The output is committed to the repo here, but you can also find it associated with the builds:
+
+```
+for project in httpie gin-gonic; do
+    for artifact in $(oras discover --format json "quay.io/rbean/sbom/plugfest/${project}:latest" | jq -r '.manifests[].reference'); do
+        oras pull "${artifact}"
+        mv sbom.cyclonedx.json "sbom.${project}.cyclonedx.json"
+    done
+done
+```
